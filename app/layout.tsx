@@ -19,7 +19,7 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "VOLTEX - Future of Electric Mobility",
+  title: "Rylee's portfolio",
   description: "Experience the future with VOLTEX electric vehicles. Premium design, cutting-edge technology, and sustainable performance.",
   keywords: ["electric cars", "EV", "sustainable transport", "luxury electric vehicles"],
 };
