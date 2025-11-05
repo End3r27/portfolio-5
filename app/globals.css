@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-orbitron: 'Orbitron', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0F1419;
+  color: #F8FAFB;
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+/* Smooth Scrolling Performance Optimization */
+html {
+  scroll-behavior: auto; /* Let Lenis handle smooth scrolling */
+}
+
+/* GPU Acceleration for smooth animations */
+[data-scroll-section] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize Canvas rendering */
+canvas {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1A2332;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #2A9D8F 0%, #4A90A4 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3DB3A3 0%, #6BA5B8 100%);
+}
+
+/* Glassmorphism Effect */
+.glass {
+  background: rgba(61, 90, 128, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74, 144, 164, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(15, 20, 25, 0.37);
+}
+
+.glass-light {
+  background: rgba(248, 250, 251, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(248, 250, 251, 0.15);
+}
+
+/* Sophisticated Glow Effects */
+.teal-glow {
+  box-shadow: 0 0 20px rgba(42, 157, 143, 0.4),
+              0 0 40px rgba(42, 157, 143, 0.25),
+              0 0 60px rgba(42, 157, 143, 0.1);
+}
+
+.slate-glow {
+  box-shadow: 0 0 20px rgba(74, 144, 164, 0.4),
+              0 0 40px rgba(74, 144, 164, 0.25),
+              0 0 60px rgba(74, 144, 164, 0.1);
+}
+
+.gold-glow {
+  box-shadow: 0 0 20px rgba(242, 161, 84, 0.5),
+              0 0 40px rgba(242, 161, 84, 0.3),
+              0 0 60px rgba(242, 161, 84, 0.15);
+}
+
+.coral-glow {
+  box-shadow: 0 0 20px rgba(255, 127, 80, 0.5),
+              0 0 40px rgba(255, 127, 80, 0.3),
+              0 0 60px rgba(255, 127, 80, 0.15);
+}
+
+/* Legacy electric glow (updated) */
+.electric-glow {
+  box-shadow: 0 0 20px rgba(42, 157, 143, 0.4),
+              0 0 40px rgba(42, 157, 143, 0.25),
+              0 0 60px rgba(42, 157, 143, 0.1);
+}
+
+.electric-glow-purple {
+  box-shadow: 0 0 20px rgba(61, 90, 128, 0.4),
+              0 0 40px rgba(61, 90, 128, 0.25),
+              0 0 60px rgba(61, 90, 128, 0.1);
+}
+
+/* Text Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, #2A9D8F 0%, #4A90A4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-premium {
+  background: linear-gradient(135deg, #3D5A80 0%, #2A9D8F 50%, #4A90A4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F2A154 0%, #E89240 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-coral {
+  background: linear-gradient(135deg, #FF7F50 0%, #F76D3C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated Background Grid */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(42, 157, 143, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 157, 143, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+.grid-bg-navy {
+  background-image:
+    linear-gradient(rgba(61, 90, 128, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 90, 128, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 50px 50px, 50px 50px;
+  }
+}
+
+/* Button Hover Animation */
+.btn-electric {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-electric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(42, 157, 143, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-electric:hover::before {
+  left: 100%;
+}
+
+/* Premium Button with Gold Accent */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(242, 161, 84, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-premium:hover::before {
+  left: 100%;
+}
+
+/* Cursor Trail Effect */
+.cursor-trail {
+  pointer-events: none;
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(42, 157, 143, 0.7), transparent);
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+/* Loading Animation */
+@keyframes spin-glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  border: 3px solid rgba(42, 157, 143, 0.3);
+  border-top: 3px solid #2A9D8F;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin-glow 1s linear infinite;
+}
+
+/* Parallax Section */
+.parallax-section {
+  transform-style: preserve-3d;
+}
+
+.parallax-layer {
+  transform: translateZ(-1px) scale(2);
+}
