@@ -5,10 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
-  // If deploying to a subdirectory (e.g., username.github.io/repo-name)
-  // Uncomment and set basePath and assetPrefix:
-  // basePath: '/portfolio-5',
-  // assetPrefix: '/portfolio-5/',
+  basePath: '/portfolio-5',
+  assetPrefix: 'https://end3r27.github.io/portfolio-5',
   trailingSlash: true,
 };
 
