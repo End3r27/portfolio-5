@@ -43,8 +43,7 @@ function CustomCarModel({
       carRef.current.rotation.x = currentRotationX.current;
 
       // Subtle floating animation
-      carRef.current.position.y =
-        position[1] + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+      carRef.current.position.y = position[1];
     }
   });
 
@@ -82,7 +81,7 @@ function GeometricCar({ scrollProgress = 0 }: { scrollProgress?: number }) {
       carRef.current.rotation.x = currentRotationX.current;
 
       // Subtle floating animation
-      carRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+      carRef.current.position.y = 0;
     }
   });
 

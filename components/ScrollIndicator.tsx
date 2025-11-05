@@ -20,13 +20,20 @@ export default function ScrollIndicator() {
         document.querySelectorAll("[data-scroll-section]")
       ) as HTMLElement[];
 
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      if (sections.length === 0) {
+        setCurrentSection(0);
+        return;
+      }
+
+      const viewportMiddle = window.innerHeight / 2;
 
       let closestIndex = 0;
-      let minDistance = Math.abs(sections[0]?.offsetTop - scrollPosition);
+      let minDistance = Infinity;
 
       sections.forEach((section, index) => {
-        const distance = Math.abs(section.offsetTop - scrollPosition);
+        const rect = section.getBoundingClientRect();
+        const sectionMiddle = rect.top + rect.height / 2;
+        const distance = Math.abs(sectionMiddle - viewportMiddle);
         if (distance < minDistance) {
           minDistance = distance;
           closestIndex = index;

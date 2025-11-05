@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
 import {
   Zap,
@@ -16,8 +14,6 @@ import {
   Play,
 } from "lucide-react";
 import CarScene from "@/components/CarSceneWithModel";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -88,63 +84,6 @@ export default function Home() {
     return () => unsubscribe();
   }, [carRotation]);
 
-  useEffect(() => {
-    // Hero section animations
-    const ctx = gsap.context(() => {
-      gsap.from(".hero-title", {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power4.out",
-        delay: 0.2,
-      });
-
-      gsap.from(".hero-subtitle", {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        ease: "power4.out",
-        delay: 0.5,
-      });
-
-      gsap.from(".hero-cta", {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power4.out",
-        delay: 0.8,
-      });
-
-      // Feature cards animation
-      gsap.from(".feature-card", {
-        scrollTrigger: {
-          trigger: ".features-section",
-          start: "top 80%",
-        },
-        y: 100,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-      });
-
-      // Stats animation
-      gsap.from(".stat-item", {
-        scrollTrigger: {
-          trigger: ".stats-section",
-          start: "top 80%",
-        },
-        scale: 0,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <main ref={heroRef} className="overflow-hidden">
       {/* Hero Section */}
@@ -183,20 +122,31 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <motion.h1
             className="hero-title text-6xl md:text-8xl lg:text-9xl font-display font-bold mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: "easeOut" }}
           >
             <span className="text-gradient-premium">VOLTEX</span>
             <br />
             <span className="text-pearl-50">The Future</span>
           </motion.h1>
 
-          <p className="hero-subtitle text-xl md:text-2xl text-pearl-200/80 mb-12 max-w-2xl mx-auto">
+          <motion.p
+            className="hero-subtitle text-xl md:text-2xl text-pearl-200/80 mb-12 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+          >
             Experience the pinnacle of electric performance. Where cutting-edge
             technology meets breathtaking design.
-          </p>
+          </motion.p>
 
-          <div className="hero-cta flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <motion.div
+            className="hero-cta flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          >
             <Link href="/models">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -216,7 +166,7 @@ export default function Home() {
               <Play className="w-5 h-5" />
               Watch Video
             </motion.button>
-          </div>
+          </motion.div>
 
           {/* Scroll Indicator */}
           <motion.div
@@ -254,9 +204,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="stat-item text-center p-6 glass rounded-2xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
               >
                 <motion.h3
                   className="text-4xl md:text-5xl font-display font-bold text-gradient-premium mb-2"
@@ -265,7 +219,7 @@ export default function Home() {
                   {stat.value}
                 </motion.h3>
                 <p className="text-pearl-300/70">{stat.label}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -298,6 +252,10 @@ export default function Home() {
                   key={index}
                   className="feature-card group p-8 glass rounded-2xl hover:bg-navy-700/30 transition-all cursor-pointer"
                   whileHover={{ y: -10 }}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
                 >
                   <motion.div
                     className="w-16 h-16 bg-premium-gradient rounded-2xl flex items-center justify-center mb-6 teal-glow group-hover:scale-110 transition-transform"

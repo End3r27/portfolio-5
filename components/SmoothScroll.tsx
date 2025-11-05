@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -12,10 +12,11 @@ export default function SmoothScroll({
 }: {
   children: React.ReactNode;
 }) {
-  const lenisRef = useRef<Lenis | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isSnappingRef = useRef(false);
-  const [currentSection, setCurrentSection] = useState(0);
+  const currentSectionRef = useRef(0);
+  const directionRef = useRef<"down" | "up" | null>(null);
+  const rafRef = useRef<number>();
 
   useEffect(() => {
     // Initialize Lenis smooth scroll with enhanced smoothness
@@ -29,8 +30,10 @@ export default function SmoothScroll({
       infinite: false,
       lerp: 0.1, // Lower value = smoother, more lag (0.1 is very smooth)
     });
-
-    lenisRef.current = lenis;
+    // Helper: keep refs and state in sync
+    const updateCurrentSection = (index: number) => {
+      currentSectionRef.current = index;
+    };
 
     // Get all sections with data-scroll-section attribute
     const getSections = () => {
@@ -39,20 +42,34 @@ export default function SmoothScroll({
       ) as HTMLElement[];
     };
 
-    // Find the closest section to snap to
-    const findClosestSection = () => {
+    const findClosestSectionByViewport = () => {
       const sections = getSections();
       if (sections.length === 0) return null;
 
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-
       let closestSection = sections[0];
-      let minDistance = Math.abs(sections[0].offsetTop - scrollPosition);
+      let bestScore = -Infinity;
 
       sections.forEach((section) => {
-        const distance = Math.abs(section.offsetTop - scrollPosition);
-        if (distance < minDistance) {
-          minDistance = distance;
+        const rect = section.getBoundingClientRect();
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const visibilityRatio =
+          rect.height === 0
+            ? 0
+            : visibleHeight / Math.min(rect.height, window.innerHeight);
+
+        const sectionMiddle = rect.top + rect.height / 2;
+        const distanceFromMiddle = Math.abs(
+          sectionMiddle - window.innerHeight / 2
+        );
+        const maxDistance = window.innerHeight / 2 + rect.height / 2;
+        const proximityScore =
+          1 - Math.min(distanceFromMiddle / maxDistance, 1);
+
+        const score = visibilityRatio * 2 + proximityScore;
+        if (score > bestScore) {
+          bestScore = score;
           closestSection = section;
         }
       });
@@ -60,11 +77,38 @@ export default function SmoothScroll({
       return closestSection;
     };
 
+    // Find the closest section to snap to based on viewport visibility
+    const resolveSectionToSnap = () => {
+      const sections = getSections();
+      if (sections.length === 0) return null;
+
+      // Always try to move forward/backward based on user intent when possible
+      if (directionRef.current === "down") {
+        const nextIndex = Math.min(
+          currentSectionRef.current + 1,
+          sections.length - 1
+        );
+        directionRef.current = null;
+        return sections[nextIndex];
+      }
+
+      if (directionRef.current === "up") {
+        const prevIndex = Math.max(currentSectionRef.current - 1, 0);
+        directionRef.current = null;
+        return sections[prevIndex];
+      }
+
+      directionRef.current = null;
+      return findClosestSectionByViewport();
+    };
+
     // Snap to section (smooth and elegant)
-    const snapToSection = (section: HTMLElement) => {
+    const snapToSection = (section: HTMLElement, index: number) => {
       if (isSnappingRef.current) return;
 
       isSnappingRef.current = true;
+
+      updateCurrentSection(index);
 
       lenis.scrollTo(section, {
         offset: 0,
@@ -84,11 +128,17 @@ export default function SmoothScroll({
     // Handle scroll event
     let lastScrollTime = Date.now();
 
-    lenis.on("scroll", () => {
+    const handleScroll = (event: { direction: number }) => {
       // Update ScrollTrigger on each scroll event for proper GSAP integration
       ScrollTrigger.update();
 
       if (isSnappingRef.current) return;
+
+      if (event.direction > 0) {
+        directionRef.current = "down";
+      } else if (event.direction < 0) {
+        directionRef.current = "up";
+      }
 
       lastScrollTime = Date.now();
 
@@ -103,24 +153,32 @@ export default function SmoothScroll({
 
         // Only snap if user hasn't scrolled for 150ms
         if (timeSinceScroll >= 150) {
-          const closestSection = findClosestSection();
+          const closestSection = resolveSectionToSnap();
           if (closestSection) {
             const sections = getSections();
             const index = sections.indexOf(closestSection);
-            setCurrentSection(index);
-            snapToSection(closestSection);
+            if (index !== -1) {
+              snapToSection(closestSection, index);
+            }
           }
         }
       }, 150);
-    });
+    };
+
+    lenis.on("scroll", handleScroll);
 
     // Animation frame loop
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafRef.current = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafRef.current = requestAnimationFrame(raf);
+
+    const sections = getSections();
+    if (sections.length > 0) {
+      updateCurrentSection(0);
+    }
 
     // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -129,23 +187,26 @@ export default function SmoothScroll({
 
       if (e.key === "ArrowDown" || e.key === "PageDown") {
         e.preventDefault();
-        const nextIndex = Math.min(currentSection + 1, sections.length - 1);
-        setCurrentSection(nextIndex);
-        snapToSection(sections[nextIndex]);
+        const nextIndex = Math.min(
+          currentSectionRef.current + 1,
+          sections.length - 1
+        );
+        if (nextIndex !== currentSectionRef.current) {
+          snapToSection(sections[nextIndex], nextIndex);
+        }
       } else if (e.key === "ArrowUp" || e.key === "PageUp") {
         e.preventDefault();
-        const prevIndex = Math.max(currentSection - 1, 0);
-        setCurrentSection(prevIndex);
-        snapToSection(sections[prevIndex]);
+        const prevIndex = Math.max(currentSectionRef.current - 1, 0);
+        if (prevIndex !== currentSectionRef.current) {
+          snapToSection(sections[prevIndex], prevIndex);
+        }
       } else if (e.key === "Home") {
         e.preventDefault();
-        setCurrentSection(0);
-        snapToSection(sections[0]);
+        snapToSection(sections[0], 0);
       } else if (e.key === "End") {
         e.preventDefault();
         const lastIndex = sections.length - 1;
-        setCurrentSection(lastIndex);
-        snapToSection(sections[lastIndex]);
+        snapToSection(sections[lastIndex], lastIndex);
       }
     };
 
@@ -158,13 +219,17 @@ export default function SmoothScroll({
 
     // Cleanup
     return () => {
+      lenis.off("scroll", handleScroll);
       lenis.destroy();
       window.removeEventListener("keydown", handleKeyDown);
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, [currentSection]);
+  }, []);
 
   return <>{children}</>;
 }
