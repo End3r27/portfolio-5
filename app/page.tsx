@@ -191,6 +191,25 @@ export default function Home() {
         data-scroll-section
         className="relative min-h-screen flex items-center justify-center bg-navy-800"
       >
+        <motion.div
+          className="absolute top-16 right-10 z-10 max-w-xs text-right glass p-6 rounded-2xl backdrop-blur pointer-events-none shadow-lg shadow-black/30"
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <p className="text-sm uppercase tracking-[0.35em] text-pearl-200/60 mb-2">
+            Voltex Hyperion Concept
+          </p>
+          <h3 className="text-2xl font-display text-pearl-50 mb-3">
+            Sculpted for Velocity
+          </h3>
+          <p className="text-pearl-200/70 leading-relaxed">
+            Carbon-infused aero body, dual-axis torque vectoring, and a 520-mile
+            solid-state power core keep Hyperion planted while it devours the horizon.
+          </p>
+        </motion.div>
+
         <CarScene
           useCustomModel={true}
           modelPath="/models/car.glb"
