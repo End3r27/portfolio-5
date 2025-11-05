@@ -212,7 +212,7 @@ export default function Home() {
 
         <CarScene
           useCustomModel={true}
-          modelPath="/models/car.glb"
+          modelPath="models/car.glb"
           modelScale={3}
           scrollProgress={carScrollValue}
         />

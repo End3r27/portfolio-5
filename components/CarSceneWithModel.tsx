@@ -7,7 +7,7 @@ import * as THREE from "three";
 
 // Custom 3D Model Loader
 function CustomCarModel({
-  modelPath = "/models/car.glb",
+  modelPath = "models/car.glb",
   scale = 1,
   position = [0, 0, 0] as [number, number, number],
   rotation = [0, 0, 0] as [number, number, number],
@@ -274,7 +274,7 @@ function LoadingFallback() {
 // Main Component with Props
 export default function CarScene({
   useCustomModel = true,
-  modelPath = "/models/car.glb",
+  modelPath = "models/car.glb",
   modelScale = 1,
   modelPosition = [0, 0, 0] as [number, number, number],
   modelRotation = [0, 0, 0] as [number, number, number],
@@ -330,4 +330,4 @@ export default function CarScene({
 }
 
 // Preload the model for better performance
-useGLTF.preload("/models/car.glb");
+useGLTF.preload("models/car.glb");
