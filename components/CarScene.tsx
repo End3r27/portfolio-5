@@ -2,8 +2,7 @@
 
 import { useRef, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Environment, PerspectiveCamera, useGLTF } from "@react-three/drei";
-import { motion } from "framer-motion-3d";
+import { Environment, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 function Car() {

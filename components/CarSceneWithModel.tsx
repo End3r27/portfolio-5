@@ -4,7 +4,6 @@ import { useRef, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { useScroll } from "framer-motion";
 
 // Custom 3D Model Loader
 function CustomCarModel({
